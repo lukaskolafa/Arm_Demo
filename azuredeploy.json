@@ -41,14 +41,10 @@
         },
         "branch": {
             "type": "string",
-            "defaultValue": "master",
-            "allowedValues": [
-                "master",
-                "develop"
-            ],
-            "metadata": {
-                "description": "The branch of the GitHub repository to use."
-            }
+            "defaultValue": "master"
+        },
+        "repoURL": {
+            "type": "string"
         }
     },
     "variables": {
@@ -101,7 +97,7 @@
                         "[resourceId('Microsoft.Web/Sites', variables('webSiteName'))]"
                     ],
                     "properties": {
-                        "RepoUrl": "app",
+                        "RepoUrl": "[parameters('repoURL')]",
                         "branch": "[parameters('branch')]",
                         "IsManualIntegration": true
                     }
