@@ -38,16 +38,27 @@
             "metadata": {
                 "description": "Describes plan's instance count"
             }
+        },
+        "branch": {
+            "type": "string",
+            "defaultValue": "master",
+            "allowedValues": [
+                "master",
+                "develop"
+            ],
+            "metadata": {
+                "description": "The branch of the GitHub repository to use."
+            }
         }
     },
     "variables": {
         "webSiteName": "[concat(parameters('environmentIdentifier'), '-armdemo-coolock')]",
         "hostingPlanName": "[concat(parameters('environmentIdentifier'), 'armdemocoolock')]",
         "siteConfig": {
-            "alwaysOn": true,
+            "alwaysOn": false,
             "phpVersion": "",
             "pythonVersion": "",
-            "use32BitWorkerProcess": false,
+            "use32BitWorkerProcess": true,
             "javaVersion": ""
         }
     },
@@ -80,7 +91,22 @@
                 "name": "[variables('webSiteName')]",
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
                 "siteConfig": "[variables('siteConfig')]"
-            }
+            },
+            "resources": [
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "web",
+                    "type": "sourcecontrols",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', variables('webSiteName'))]"
+                    ],
+                    "properties": {
+                        "RepoUrl": "app",
+                        "branch": "[parameters('branch')]",
+                        "IsManualIntegration": true
+                    }
+                }
+            ]
         }
     ],
     "outputs": {}
